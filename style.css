@@ -1,0 +1,223 @@
+/* General Body Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  /* Purpose Banner */
+  #purposeBanner {
+    position: sticky;
+    top: 0;
+    background-color: #0046ad;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 16px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Header */
+  header {
+    background-color: #0046ad;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  header .branding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #logo {
+    width: 100px;
+    height: auto;
+    background-color: white;
+    border-radius: 10%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  
+  header h2 {
+    margin: 5px 0;
+    font-size: 20px;
+  }
+  
+  /* Feedback Section */
+  #feedback {
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    background-color: #00c851;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Hero Section */
+  .hero {
+    text-align: center;
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #0046ad, #00c851);
+    color: white;
+  }
+  
+  .hero h1 {
+    font-size: 36px;
+  }
+  
+  .hero .purpose {
+    font-size: 18px;
+    margin: 20px 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Input Container */
+  .input-container {
+    margin: 20px auto;
+    text-align: center;
+  }
+  
+  input[type="text"], textarea {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: 16px;
+    width: 80%;
+    max-width: 500px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  textarea {
+    height: 120px;
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #00c851;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #007b45;
+  }
+  
+  /* Map Styling */
+  #interactiveMap {
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  #mapIframe {
+    width: 100%;
+    height: 400px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  #mapLegend {
+    margin-top: 10px;
+    text-align: left;
+    padding: 10px;
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  #mapLegend ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #mapLegend li {
+    margin: 5px 0;
+  }
+  
+  #mapLegend .icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  
+  #mapLegend .fire {
+    background-color: red;
+  }
+  
+  #mapLegend .crisis {
+    background-color: blue;
+  }
+  
+  #mapLegend .police {
+    background-color: black;
+  }
+  
+  /* Summary and Flowchart */
+  #summary {
+    margin: 20px auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  #dynamicFlowChart, #referralNetwork {
+    margin-top: 20px;
+  }
+  
+  #flowChart, #referralChart {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 20px auto;
+    display: block;
+  }
+  
+  svg rect {
+    fill: lightblue;
+    stroke: black;
+  }
+  
+  svg text {
+    font-size: 14px;
+    fill: black;
+  }
+  
+  svg line {
+    stroke: black;
+    stroke-width: 2;
+  }
+  
+  svg marker path {
+    fill: black;
+  }
+  
+  /* Footer */
+  footer {
+    text-align: center;
+    background-color: #0046ad;
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
