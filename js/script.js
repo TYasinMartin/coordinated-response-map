@@ -185,15 +185,17 @@ const firebaseConfig = {
       .then((snapshot) => {
         const data = snapshot.val();
 
-        // Add username and role to the summary
-        if (data.userDetails) {
-          const userDetails = data.userDetails;
+        // Retrieve username and role
+        const userDetails = data.userDetails;
+        let userContent = "";
+        if (userDetails) {
+          userContent = `User: ${userDetails.username}, Role: ${userDetails.role}`;
           const userInfo = document.createElement("li");
-          userInfo.textContent = `User: ${userDetails.username}, Role: ${userDetails.role}`;
+          userInfo.textContent = userContent;
           summaryList.appendChild(userInfo);
         }
 
-        // Add other steps to the summary
+        // Add all other steps to the summary
         for (const key in data) {
           if (key !== "userDetails") {
             const stepData = data[key];
@@ -211,7 +213,7 @@ const firebaseConfig = {
 
             listItem.textContent = content;
             summaryList.appendChild(listItem);
-          }
+         }
         }
       })
       .catch((error) => {
@@ -219,6 +221,7 @@ const firebaseConfig = {
         alert("Failed to generate summary. Please try again.");
       });
   }
+
   
   // Print Summary
   function printSummary() {
