@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coordinated Response Mapping</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <img src="images/logo.png" alt="Coordinated Response Logo" id="logo">
+    <h1>Coordinated Response Mapping</h1>
+    <p>Discover how agencies collaborate to better serve our community.</p>
+  </header>
+
+  <!-- Login Section -->
+  <div id="login">
+    <h2>Welcome! Please Log In</h2>
+    <p>Enter your name below to begin the mapping session.</p>
+    <input type="text" id="username" placeholder="Enter your name">
+    <button onclick="startSession()">Log In</button>
+  </div>
+
+  <!-- Workspace Section -->
+  <div id="workspace" style="display: none;">
+    <h2>Welcome, <span id="userDisplay"></span>!</h2>
+    <div id="layout">
+      <!-- Agency Input -->
+      <div id="agencyInput">
+        <h3>Input Your Response</h3>
+        <textarea id="response1Input" placeholder="Describe your agency's response..."></textarea>
+        <button id="saveButton" onclick="saveResponse1()">Submit Response</button>
+      </div>
+
+      <!-- Google Map Embed -->
+      <div id="mapContainer">
+        <iframe 
+          src="https://maps.google.com" 
+          id="mapIframe" 
+          style="width: 100%; height: 400px; border: none;">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final Summary Section -->
+  <div id="summary" style="display: none;">
+    <h2>Final Mapping Summary</h2>
+    <p>Here is a summary of all responses collected during this session:</p>
+    <ul id="finalAgencyList"></ul>
+  </div>
+
+  <!-- Footer Section -->
+  <footer>
+    <p>A site created by: Dr. Tauheeda Yasin</p>
+  </footer>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"></script>
+
+  <!-- Firebase Initialization -->
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXZ50WGW8kXZ1sRxT6sCzDMtrmHu__lS0",
+      authDomain: "mappingexercise-b2641.firebaseapp.com",
+      databaseURL: "https://mappingexercise-b2641-default-rtdb.firebaseio.com",
+      projectId: "mappingexercise-b2641",
+      storageBucket: "mappingexercise-b2641.firebasestorage.app",
+      messagingSenderId: "182824622721",
+      appId: "1:182824622721:web:d77132f33aad0df2590b80",
+      measurementId: "G-5G221YGZL7"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Save Response to Firebase
+    function saveResponse1() {
+      const response = document.getElementById("response1Input").value.trim();
+      if (!response) {
+        alert("Please enter a response!");
+        return;
+      }
+
+      firebase.database().ref("responses").push({
+        scenario: "Scenario 1",
+        response: response,
+        timestamp: Date.now()
+      });
+
+      alert("Response saved successfully!");
+      document.getElementById("response1Input").value = ""; // Clear input
+    }
+
+    // Fetch and Display Responses in Real-Time
+    const r
