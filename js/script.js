@@ -163,22 +163,36 @@ const firebaseConfig = {
   
     generateSummary();
   }
-  
-  // Generate Summary
-  function generateSummary() {
-    const summaryList = document.getElementById("finalSummaryList");
-    summaryList.innerHTML = "";
-  
-    // Pull data from Firebase and populate summary
-    database.ref("responses").once("value", (snapshot) => {
+
+// Generate Summarys   
+function generateSummary() {
+  const summaryList = document.getElementById("finalSummaryList");
+  summaryList.innerHTML = "";
+
+  // Fetch data from Firebase
+  database.ref("responses").once("value")
+    .then((snapshot) => {
       snapshot.forEach((childSnapshot) => {
         const data = childSnapshot.val();
         const listItem = document.createElement("li");
-        listItem.textContent = `${data.step}: ${data.detail}`;
+
+        // Dynamically construct summary content
+        let content = `${data.step}: `;
+        if (data.detail) content += data.detail;
+        else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
+        else if (data.referral && data.resources && data.data) content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
+        else if (data.partners && data.underutilizedResources) content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
+
+        listItem.textContent = content;
         summaryList.appendChild(listItem);
       });
+    })
+    .catch((error) => {
+      console.error("Error generating summary:", error);
+      alert("Failed to generate summary. Please try again.");
     });
-  }
+}
+
   
   // Print Summary
   function printSummary() {
