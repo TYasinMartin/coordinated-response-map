@@ -182,8 +182,12 @@ const firebaseConfig = {
     // Fetch data for the current session
     database.ref(`responses/${sessionId}`).once("value")
       .then((snapshot) => {
+        console.log("Fetched Data:", snapshot.val()); // Debugging: Check what data is fetched
+
         snapshot.forEach((childSnapshot) => {
           const data = childSnapshot.val();
+          console.log("Child Data:", data); // Debugging: Check each item
+
           const listItem = document.createElement("li");
 
           // Construct content dynamically
@@ -206,6 +210,7 @@ const firebaseConfig = {
         alert("Failed to generate summary. Please try again.");
       });
   }
+
 
   
   // Print Summary
