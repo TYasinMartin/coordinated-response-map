@@ -77,26 +77,29 @@ const firebaseConfig = {
   function saveResponseSteps() {
     const team = document.getElementById("teamInput").value.trim();
     const actions = document.getElementById("actionsInput").value.trim();
-  
+
     if (!team || !actions) {
       alert("Please complete both fields.");
       return;
     }
-  
-    // Save to Firebase
+
+    // Save to Firebase with username and role
     database.ref("responses").push({
       step: "Response Steps",
       team: team,
       actions: actions,
+      username: globalUsername,
+      role: globalRole,
       timestamp: Date.now()
     });
-  
+
     responses.push({ step: "Response Steps", team, actions });
-  
+
     // Update UI
     document.getElementById("responseSteps").style.display = "none";
     document.getElementById("referrals").style.display = "block";
   }
+
   
   // Save Referrals and Resources
   function saveReferrals() {
@@ -188,26 +191,27 @@ const firebaseConfig = {
         snapshot.forEach((childSnapshot) => {
           const data = childSnapshot.val();
 
-          // Add username and role as the first item
+          // Display username and role as a separate entry, only once
           if (!userDisplayed && data.username && data.role) {
             const userInfo = document.createElement("li");
             userInfo.textContent = `User: ${data.username}, Role: ${data.role}`;
             summaryList.appendChild(userInfo);
             userDisplayed = true;
           }
-  
+
           // Create a list item for each step
           const listItem = document.createElement("li");
           let content = `${data.step}: `;
 
           // Add step-specific details
           if (data.detail) content += data.detail;
-          else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
-          else if (data.referral && data.resources && data.data) {
+          if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
+          if (data.referral && data.resources && data.data) {
             content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
-          } else if (data.partners && data.underutilizedResources) {
+          }
+          if (data.partners && data.underutilizedResources) {
             content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
-         }
+          }
 
           listItem.textContent = content;
           summaryList.appendChild(listItem);
@@ -218,7 +222,6 @@ const firebaseConfig = {
         alert("Failed to generate summary. Please try again.");
       });
   }
-
 
 
   
