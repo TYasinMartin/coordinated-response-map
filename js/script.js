@@ -72,78 +72,81 @@ const firebaseConfig = {
   function saveResponseSteps() {
     const team = document.getElementById("teamInput").value.trim();
     const actions = document.getElementById("actionsInput").value.trim();
-  
+
     if (!team || !actions) {
       alert("Please complete both fields.");
       return;
     }
-  
-    // Save to Firebase
-    database.ref("responses").push({
+
+    // Save under session-specific node
+    database.ref(`responses/${sessionId}`).push({
       step: "Response Steps",
       team: team,
       actions: actions,
       timestamp: Date.now()
     });
-  
+
     responses.push({ step: "Response Steps", team, actions });
-  
+
     // Update UI
     document.getElementById("responseSteps").style.display = "none";
     document.getElementById("referrals").style.display = "block";
   }
+
   
   // Save Referrals and Resources
   function saveReferrals() {
     const referral = document.getElementById("referralInput").value.trim();
     const resources = document.getElementById("resourcesInput").value.trim();
     const data = document.getElementById("dataInput").value.trim();
-  
+
     if (!referral || !resources || !data) {
       alert("Please complete all fields.");
       return;
     }
-  
-    // Save to Firebase
-    database.ref("responses").push({
+
+    // Save under session-specific node
+    database.ref(`responses/${sessionId}`).push({
       step: "Referrals",
       referral: referral,
       resources: resources,
       data: data,
       timestamp: Date.now()
     });
-  
+
     responses.push({ step: "Referrals", referral, resources, data });
-  
+
     // Update UI
     document.getElementById("referrals").style.display = "none";
     document.getElementById("partners").style.display = "block";
   }
+
   
   // Save Partners
   function savePartners() {
     const partners = document.getElementById("partnersInput").value.trim();
     const underutilizedResources = document.getElementById("underutilizedResourcesInput").value.trim();
-  
+
     if (!partners || !underutilizedResources) {
       alert("Please complete all fields.");
       return;
     }
-  
-    // Save to Firebase
-    database.ref("responses").push({
+
+    // Save under session-specific node
+    database.ref(`responses/${sessionId}`).push({
       step: "Partners",
       partners: partners,
       underutilizedResources: underutilizedResources,
       timestamp: Date.now()
     });
-  
+
     responses.push({ step: "Partners", partners, underutilizedResources });
-  
+
     // Update UI
     document.getElementById("partners").style.display = "none";
     document.getElementById("painPoints").style.display = "block";
   }
+
   
   // Save Pain Points
   function savePainPoints() {
@@ -182,12 +185,16 @@ const firebaseConfig = {
           const data = childSnapshot.val();
           const listItem = document.createElement("li");
 
-          // Dynamically construct summary content
+          // Construct content dynamically
           let content = `${data.step}: `;
-          if (data.detail) content += data.detail;
-          else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
-          else if (data.referral && data.resources && data.data) content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
-          else if (data.partners && data.underutilizedResources) content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
+          if (data.detail) content += data.detail; // For Activation and Pain Points
+          if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`; // For Response Steps
+          if (data.referral && data.resources && data.data) {
+            content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
+          } // For Referrals
+          if (data.partners && data.underutilizedResources) {
+            content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
+          } // For Partners
 
           listItem.textContent = content;
           summaryList.appendChild(listItem);
@@ -198,7 +205,6 @@ const firebaseConfig = {
         alert("Failed to generate summary. Please try again.");
       });
   }
-
 
   
   // Print Summary
