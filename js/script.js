@@ -180,12 +180,10 @@ const firebaseConfig = {
           let content = `${data.step}: `;
 
           // Include username and role if available
-          if (data.username && data.role) {
-            content += `User - ${data.username}, Role - ${data.role}; `;
-          }
+          if (data.username && data.role) content += `User - ${data.username}, Role - ${data.role} `;
 
           // Add specific step details
-          if (data.detail) content += data.detail;
+          else if (data.detail) content += data.detail;
           else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
           else if (data.referral && data.resources && data.data) {
             content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
