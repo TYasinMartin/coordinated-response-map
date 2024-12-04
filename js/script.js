@@ -31,12 +31,13 @@ const firebaseConfig = {
     // Generate a unique session ID
     sessionId = `session_${Date.now()}`;
 
-    // Save user details
-    database.ref("users").push({
-      sessionId: sessionId,
-      username: username,
-      role: role,
-      timestamp: Date.now()
+    // Save user details under session-specific node
+    database.ref(`responses/${sessionId}`).set({
+      userDetails: {
+        username: username,
+        role: role,
+        timestamp: Date.now()
+      }
     });
 
     // Update UI
@@ -182,36 +183,42 @@ const firebaseConfig = {
     // Fetch data for the current session
     database.ref(`responses/${sessionId}`).once("value")
       .then((snapshot) => {
-        console.log("Fetched Data:", snapshot.val()); // Debugging: Check what data is fetched
+        const data = snapshot.val();
 
-        snapshot.forEach((childSnapshot) => {
-          const data = childSnapshot.val();
-          console.log("Child Data:", data); // Debugging: Check each item
+        // Add username and role to the summary
+        if (data.userDetails) {
+          const userDetails = data.userDetails;
+          const userInfo = document.createElement("li");
+          userInfo.textContent = `User: ${userDetails.username}, Role: ${userDetails.role}`;
+          summaryList.appendChild(userInfo);
+        }
 
-          const listItem = document.createElement("li");
+        // Add other steps to the summary
+        for (const key in data) {
+          if (key !== "userDetails") {
+            const stepData = data[key];
+            const listItem = document.createElement("li");
 
-          // Construct content dynamically
-          let content = `${data.step}: `;
-          if (data.detail) content += data.detail; // For Activation and Pain Points
-          if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`; // For Response Steps
-          if (data.referral && data.resources && data.data) {
-            content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
-          } // For Referrals
-          if (data.partners && data.underutilizedResources) {
-            content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
-          } // For Partners
+            let content = `${stepData.step}: `;
+            if (stepData.detail) content += stepData.detail;
+            if (stepData.team && stepData.actions) content += `Team - ${stepData.team}, Actions - ${stepData.actions}`;
+            if (stepData.referral && stepData.resources && stepData.data) {
+              content += `Referral - ${stepData.referral}, Resources - ${stepData.resources}, Data - ${stepData.data}`;
+            }
+            if (stepData.partners && stepData.underutilizedResources) {
+              content += `Partners - ${stepData.partners}, Underutilized Resources - ${stepData.underutilizedResources}`;
+            }
 
-          listItem.textContent = content;
-          summaryList.appendChild(listItem);
-        });
+            listItem.textContent = content;
+            summaryList.appendChild(listItem);
+          }
+        }
       })
       .catch((error) => {
         console.error("Error generating summary:", error);
         alert("Failed to generate summary. Please try again.");
       });
   }
-
-
   
   // Print Summary
   function printSummary() {
