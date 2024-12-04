@@ -178,28 +178,19 @@ const firebaseConfig = {
     const summaryList = document.getElementById("finalSummaryList");
     summaryList.innerHTML = "";
 
-    // Fetch data from Firebase
-    database.ref("responses").once("value")
-      .then((snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-          const data = childSnapshot.val();
-          const listItem = document.createElement("li");
+    // Use local responses array to populate the summary
+    responses.forEach((response) => {
+      const listItem = document.createElement("li");
+      let content = `${response.step}: `;
 
-          // Dynamically construct summary content
-          let content = `${data.step}: `;
-          if (data.detail) content += data.detail;
-          else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
-          else if (data.referral && data.resources && data.data) content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
-          else if (data.partners && data.underutilizedResources) content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
+      if (response.detail) content += response.detail;
+      else if (response.team && response.actions) content += `Team - ${response.team}, Actions - ${response.actions}`;
+      else if (response.referral && response.resources && response.data) content += `Referral - ${response.referral}, Resources - ${response.resources}, Data - ${response.data}`;
+      else if (response.partners && response.underutilizedResources) content += `Partners - ${response.partners}, Underutilized Resources - ${response.underutilizedResources}`;
 
-          listItem.textContent = content;
-          summaryList.appendChild(listItem);
-        });
-      })
-      .catch((error) => {
-        console.error("Error generating summary:", error);
-        alert("Failed to generate summary. Please try again.");
-      });
+      listItem.textContent = content;
+      summaryList.appendChild(listItem);
+    });
   }
 
   
