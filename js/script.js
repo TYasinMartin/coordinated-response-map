@@ -168,17 +168,32 @@ const firebaseConfig = {
   function generateSummary() {
     const summaryList = document.getElementById("finalSummaryList");
     summaryList.innerHTML = "";
-  
+
     // Pull data from Firebase and populate summary
     database.ref("responses").once("value", (snapshot) => {
       snapshot.forEach((childSnapshot) => {
         const data = childSnapshot.val();
         const listItem = document.createElement("li");
-        listItem.textContent = `${data.step}: ${data.detail}`;
+
+        // Build summary content dynamically based on available keys
+        let content = `${data.step}: `;
+
+        if (data.detail) {
+          content += data.detail;
+        } else if (data.team && data.actions) {
+          content += `Team - ${data.team}, Actions - ${data.actions}`;
+        } else if (data.referral && data.resources && data.data) {
+          content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
+        } else if (data.partners && data.underutilizedResources) {
+          content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
+        }
+
+        listItem.textContent = content;
         summaryList.appendChild(listItem);
       });
     });
   }
+
   
   // Print Summary
   function printSummary() {
