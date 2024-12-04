@@ -19,34 +19,34 @@ const firebaseConfig = {
   
   // Start Session
   function startSession() {
-  const username = document.getElementById("username").value.trim();
-  const role = document.getElementById("role").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const role = document.getElementById("role").value.trim();
 
-  if (!username || !role) {
-    alert("Please enter your name and role to continue.");
-    return;
-  }
+    if (!username || !role) {
+      alert("Please enter your name and role to continue.");
+      return;
+    }
 
-  // Clear previous responses from Firebase
-  database.ref("responses").remove()
-    .then(() => {
-      console.log("Previous responses cleared.");
-    })
-    .catch((error) => {
-      console.error("Error clearing responses:", error);
+    // Clear previous responses from Firebase
+    database.ref("responses").remove()
+      .then(() => {
+        console.log("Previous responses cleared.");
+      })
+      .catch((error) => {
+        console.error("Error clearing responses:", error);
+      });
+
+    // Save user details
+    database.ref("users").push({
+      username: username,
+      role: role,
+      timestamp: Date.now()
     });
 
-  // Save user details
-  database.ref("users").push({
-    username: username,
-    role: role,
-    timestamp: Date.now()
-  });
-
-  // Update UI
-  document.getElementById("login").style.display = "none";
-  document.getElementById("activation").style.display = "block";
-}
+    // Update UI
+    document.getElementById("login").style.display = "none";
+    document.getElementById("activation").style.display = "block";
+  }
   
   // Save Activation Step
   function saveActivation() {
