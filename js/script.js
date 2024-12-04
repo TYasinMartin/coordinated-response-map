@@ -183,26 +183,31 @@ const firebaseConfig = {
     // Fetch data from Firebase
     database.ref("responses").once("value")
       .then((snapshot) => {
+        let userDisplayed = false; // Flag to ensure username and role are displayed once
+
         snapshot.forEach((childSnapshot) => {
           const data = childSnapshot.val();
-          const listItem = document.createElement("li");
 
-          // Dynamically construct summary content
+          // Add username and role as the first item
+          if (!userDisplayed && data.username && data.role) {
+            const userInfo = document.createElement("li");
+            userInfo.textContent = `User: ${data.username}, Role: ${data.role}`;
+            summaryList.appendChild(userInfo);
+            userDisplayed = true;
+          }
+  
+          // Create a list item for each step
+          const listItem = document.createElement("li");
           let content = `${data.step}: `;
 
-          // Include username and role
-          if (data.username && data.role) {
-            content += `User - ${data.username}, Role - ${data.role}; `;
-          }
-
-          // Add specific step details
+          // Add step-specific details
           if (data.detail) content += data.detail;
           else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
           else if (data.referral && data.resources && data.data) {
             content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
           } else if (data.partners && data.underutilizedResources) {
             content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
-          }
+         }
 
           listItem.textContent = content;
           summaryList.appendChild(listItem);
@@ -213,6 +218,7 @@ const firebaseConfig = {
         alert("Failed to generate summary. Please try again.");
       });
   }
+
 
 
   
