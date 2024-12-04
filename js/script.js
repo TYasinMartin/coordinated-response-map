@@ -19,25 +19,34 @@ const firebaseConfig = {
   
   // Start Session
   function startSession() {
-    const username = document.getElementById("username").value.trim();
-    const role = document.getElementById("role").value.trim();
-  
-    if (!username || !role) {
-      alert("Please enter your name and role to continue.");
-      return;
-    }
-  
-    // Save user details
-    database.ref("users").push({
-      username: username,
-      role: role,
-      timestamp: Date.now()
-    });
-  
-    // Update UI
-    document.getElementById("login").style.display = "none";
-    document.getElementById("activation").style.display = "block";
+  const username = document.getElementById("username").value.trim();
+  const role = document.getElementById("role").value.trim();
+
+  if (!username || !role) {
+    alert("Please enter your name and role to continue.");
+    return;
   }
+
+  // Clear previous responses from Firebase
+  database.ref("responses").remove()
+    .then(() => {
+      console.log("Previous responses cleared.");
+    })
+    .catch((error) => {
+      console.error("Error clearing responses:", error);
+    });
+
+  // Save user details
+  database.ref("users").push({
+    username: username,
+    role: role,
+    timestamp: Date.now()
+  });
+
+  // Update UI
+  document.getElementById("login").style.display = "none";
+  document.getElementById("activation").style.display = "block";
+}
   
   // Save Activation Step
   function saveActivation() {
@@ -164,34 +173,34 @@ const firebaseConfig = {
     generateSummary();
   }
 
-// Generate Summarys   
-function generateSummary() {
-  const summaryList = document.getElementById("finalSummaryList");
-  summaryList.innerHTML = "";
+  // Generate Summarys   
+  function generateSummary() {
+    const summaryList = document.getElementById("finalSummaryList");
+    summaryList.innerHTML = "";
 
-  // Fetch data from Firebase
-  database.ref("responses").once("value")
-    .then((snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        const data = childSnapshot.val();
-        const listItem = document.createElement("li");
+    // Fetch data from Firebase
+    database.ref("responses").once("value")
+      .then((snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          const data = childSnapshot.val();
+          const listItem = document.createElement("li");
 
-        // Dynamically construct summary content
-        let content = `${data.step}: `;
-        if (data.detail) content += data.detail;
-        else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
-        else if (data.referral && data.resources && data.data) content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
-        else if (data.partners && data.underutilizedResources) content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
+          // Dynamically construct summary content
+          let content = `${data.step}: `;
+          if (data.detail) content += data.detail;
+          else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
+          else if (data.referral && data.resources && data.data) content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
+          else if (data.partners && data.underutilizedResources) content += `Partners - ${data.partners}, Underutilized Resources - ${data.underutilizedResources}`;
 
-        listItem.textContent = content;
-        summaryList.appendChild(listItem);
+          listItem.textContent = content;
+          summaryList.appendChild(listItem);
+        });
+      })
+      .catch((error) => {
+        console.error("Error generating summary:", error);
+        alert("Failed to generate summary. Please try again.");
       });
-    })
-    .catch((error) => {
-      console.error("Error generating summary:", error);
-      alert("Failed to generate summary. Please try again.");
-    });
-}
+  }
 
   
   // Print Summary
