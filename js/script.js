@@ -151,27 +151,28 @@ const firebaseConfig = {
   // Save Pain Points
   function savePainPoints() {
     const painPoints = document.getElementById("painPointsInput").value.trim();
-  
+
     if (!painPoints) {
       alert("Please describe your pain points.");
       return;
     }
-  
-    // Save to Firebase
-    database.ref("responses").push({
+
+    // Save under session-specific node
+    database.ref(`responses/${sessionId}`).push({
       step: "Pain Points",
       detail: painPoints,
       timestamp: Date.now()
     });
-  
+
     responses.push({ step: "Pain Points", detail: painPoints });
-  
+
     // Update UI
     document.getElementById("painPoints").style.display = "none";
     document.getElementById("summary").style.display = "block";
-  
+
     generateSummary();
   }
+
 
   // Generate Summarys   
   function generateSummary() {
