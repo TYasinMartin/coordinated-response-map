@@ -18,49 +18,60 @@ const firebaseConfig = {
   const responses = [];
   
   // Start Session
+  let globalUsername = "";
+  let globalRole = "";
+
   function startSession() {
     const username = document.getElementById("username").value.trim();
     const role = document.getElementById("role").value.trim();
-  
+
     if (!username || !role) {
       alert("Please enter your name and role to continue.");
       return;
     }
-  
+
+    // Store in global variables
+    globalUsername = username;
+    globalRole = role;
+
     // Save user details
     database.ref("users").push({
       username: username,
       role: role,
       timestamp: Date.now()
     });
-  
+
     // Update UI
     document.getElementById("login").style.display = "none";
     document.getElementById("activation").style.display = "block";
   }
+
   
   // Save Activation Step
   function saveActivation() {
     const activation = document.getElementById("activationInput").value.trim();
-  
+
     if (!activation) {
       alert("Please describe how your agency gets activated.");
       return;
     }
-  
-    // Save to Firebase
+
+    // Save to Firebase with username and role
     database.ref("responses").push({
       step: "Activation",
       detail: activation,
+      username: globalUsername,
+      role: globalRole,
       timestamp: Date.now()
     });
-  
+
     responses.push({ step: "Activation", detail: activation });
-  
+
     // Update UI
     document.getElementById("activation").style.display = "none";
     document.getElementById("responseSteps").style.display = "block";
   }
+
   
   // Save Response Steps
   function saveResponseSteps() {
@@ -179,11 +190,13 @@ const firebaseConfig = {
           // Dynamically construct summary content
           let content = `${data.step}: `;
 
-          // Include username and role if available
-          if (data.username && data.role) content += `User - ${data.username}, Role - ${data.role} `;
+          // Include username and role
+          if (data.username && data.role) {
+            content += `User - ${data.username}, Role - ${data.role}; `;
+          }
 
           // Add specific step details
-          else if (data.detail) content += data.detail;
+          if (data.detail) content += data.detail;
           else if (data.team && data.actions) content += `Team - ${data.team}, Actions - ${data.actions}`;
           else if (data.referral && data.resources && data.data) {
             content += `Referral - ${data.referral}, Resources - ${data.resources}, Data - ${data.data}`;
@@ -197,9 +210,10 @@ const firebaseConfig = {
       })
       .catch((error) => {
         console.error("Error generating summary:", error);
-       alert("Failed to generate summary. Please try again.");
+        alert("Failed to generate summary. Please try again.");
       });
   }
+
 
   
   // Print Summary
